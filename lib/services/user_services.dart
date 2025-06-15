@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_frontend/model/user_model.dart';
 import 'package:http/http.dart' as http;
 
-const String baseUrl = 'http://localhost:5000/api/users';
+//const String baseUrl = 'http://localhost:5000/api/users';
+const String baseUrl = 'http://10.0.2.2:5000/api/users';
 
 class UserServices {
 //create user
@@ -25,6 +26,17 @@ class UserServices {
       }
     } catch (e) {
       debugPrint('Error creating user: $e');
+    }
+  }
+
+//get all user
+  Future<List<User>> fetchUsers() async {
+    final response = await http.get(Uri.parse(baseUrl));
+    if (response.statusCode == 200) {
+      final List jsonData = jsonDecode(response.body);
+      return jsonData.map((e) => User.fromJson(e)).toList();
+    } else {
+      throw Exception('Failed to fetch users');
     }
   }
 }
